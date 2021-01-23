@@ -1,0 +1,26 @@
+trigger:
+- develop*
+- feature*
+- master
+
+pr:
+- develop*
+- feature*
+
+resources:
+  repositories:
+    - repository: congress
+      type: git
+      name: congress/templates
+
+pool:
+  name: $(AgentPool)
+  demands: Delphi
+
+jobs:
+- template: build.yml@congress
+  parameters:
+    # We override the default x86Versions list because deltics.in does also support 
+    #  versions 2 thru 6 (where-as the default x86 builds only include 7 thru xe )
+    x86Versions: [ 2, 3, 4, 5, 6, 7, 2005, 2006, 2007, 2009, 2010, xe ]
+    testArgs: '-delphiVersion:$(delphiVersion)'
