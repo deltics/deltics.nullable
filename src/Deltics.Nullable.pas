@@ -7,30 +7,35 @@
 interface
 
   uses
-    Deltics.Nullable.Base
-  {$ifdef Generics},
+  {$ifdef Generics}
+    Deltics.Nullable.Generic,
+  {$else}
     Deltics.Nullable.Boolean,
-    Deltics.Nullable.DateTime,
+    Deltics.Nullable.Datetime,
     Deltics.Nullable.Integer,
-    Deltics.Nullable.String_
-  {$endif};
-
+    Deltics.Nullable.String_,
+  {$endif}
+    Deltics.Nullable.Utils;
 
 
   type
   {$ifdef Generics}
+
     NullableBoolean   = Nullable<Boolean>;
     NullableDatetime  = Nullable<TDatetime>;
     NullableInteger   = Nullable<Integer>;
     NullableString    = Nullable<String>;
+
   {$else}
+
     NullableBoolean   = Deltics.Nullable.Boolean.NullableBoolean;
     NullableDateTime  = Deltics.Nullable.DateTime.NullableDateTime;
     NullableInteger   = Deltics.Nullable.Integer.NullableInteger;
-    NullableString    = Deltics.Nullable.String.NullableString;
+    NullableString    = Deltics.Nullable.String_.NullableString;
+
   {$endif}
 
-    ENullValueException = Deltics.Nullable.Base.ENullValueException;
+    ENullValueException = Deltics.Nullable.Utils.ENullValueException;
 
 
 
