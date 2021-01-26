@@ -1,7 +1,7 @@
 
 {$i deltics.nullable.inc}
 
-  unit Deltics.Nullable.Base;
+  unit Deltics.Nullable.Utils;
 
 
 interface
@@ -38,17 +38,12 @@ interface
       property Value: T read get_Value write set_Value;
     end;
   {$else}
-    Nullable = object
-    private
-      fHasValue: String;
-      function get_IsNull: Boolean;
-    protected
-      procedure GetValue(var aValue);
-      procedure SetValue(const aValue);
-    public
-      procedure Clear;
-      property IsNull: Boolean read get_IsNull;
-    end;
+
+    procedure CheckHasValue(const aHasValue: String);
+    procedure GetIsNull(const aHasValue: String; var aIsNull: Boolean);
+    procedure SetHasValue(var aHasValue: String);
+    procedure SetNullIfTrue(const aIsNull: Boolean; var aHasValue: String);
+
   {$endif}
 
 
@@ -76,7 +71,7 @@ implementation
 
   function Nullable<T>.get_Value: T;
   begin
-    if IsNull then
+    if self.IsNull then
       raise ENullValueException.Create('Value is null');
 
     result := fValue;
@@ -103,28 +98,37 @@ implementation
 
 { Nullable --------------------------------------------------------------------------------------- }
 
-  procedure Nullable.Clear;
-  begin
-    fHasValue := '';
-  end;
+  const
+    HASVALUE_Null     = '';
+    HASVALUE_NotNull  = 'YES';
 
 
-  procedure Nullable.GetValue(var aValue);
+  procedure CheckHasValue(const aHasValue: String);
   begin
-    if IsNull then
+    if aHasValue = HASVALUE_Null then
       raise ENullValueException.Create('Value is null');
   end;
 
 
-  function Nullable.get_IsNull: Boolean;
+  procedure GetIsNull(const aHasValue: String; var aIsNull: Boolean);
   begin
-    result := (fHasValue = '');
+    aIsNull := aHasValue = HASVALUE_Null;
   end;
 
 
-  procedure Nullable.SetValue(const aValue);
+  procedure SetHasValue(var aHasValue: String);
   begin
-    fHasValue := 'YES';
+    aHasValue := HASVALUE_NotNull;
+  end;
+
+
+  procedure SetNullIfTrue(const aIsNull: Boolean; var aHasValue: String);
+  begin
+    if NOT aIsNull then
+      raise EInvalidOperation.Create('IsNull can only be used to make the value null (IsNull := TRUE).  '
+                                   + 'To set a concrete value on a nullable, use the Value property.');
+
+    aHasValue := HASVALUE_Null;
   end;
 
 {$endif}
