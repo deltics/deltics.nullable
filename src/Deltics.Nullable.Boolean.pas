@@ -8,24 +8,22 @@ interface
 
 {$ifNdef Generics}
 
-  uses
-    Deltics.Nullable.Base;
-
-
   type
-    NullableBoolean = object(Nullable)
+    NullableBoolean = object
     private
+      fHasValue: String;
       fValue: Boolean;
+      function get_IsNull: Boolean;
       function get_IsFalse: Boolean;
       function get_IsTrue: Boolean;
       function get_Value: Boolean;
+      procedure set_IsNull(const aValue: Boolean);
       procedure set_Value(const aValue: Boolean);
-    protected
-      procedure GetValue(var aValue);
-      procedure SetValue(const aValue);
     public
+      procedure Clear;
       property IsFalse: Boolean read get_IsFalse;
       property IsTrue: Boolean read get_IsTrue;
+      property IsNull: Boolean read get_IsNull write set_IsNull;
       property Value: Boolean read get_Value write set_Value;
     end;
 
@@ -36,23 +34,11 @@ implementation
 
 {$ifNdef Generics}
 
+  uses
+    Deltics.Nullable.Utils;
+
+
 { NullableBoolean -------------------------------------------------------------------------------- }
-
-  procedure NullableBoolean.GetValue(var aValue);
-  begin
-    inherited;
-
-    Boolean(aValue) := fValue;
-  end;
-
-
-  procedure NullableBoolean.SetValue(const aValue);
-  begin
-    inherited;
-
-    fValue := Boolean(aValue);
-  end;
-
 
   function NullableBoolean.get_IsFalse: Boolean;
   begin
@@ -66,18 +52,39 @@ implementation
   end;
 
 
+  function NullableBoolean.get_IsNull: Boolean;
+  begin
+    GetIsNull(fHasValue, result);
+  end;
+
+
   function NullableBoolean.get_Value: Boolean;
   begin
-    GetValue(result);
+    CheckHasValue(fHasValue);
+    result := fValue;
+  end;
+
+
+  procedure NullableBoolean.set_IsNull(const aValue: Boolean);
+  begin
+    SetNullIfTrue(aValue, fHasValue);
   end;
 
 
   procedure NullableBoolean.set_Value(const aValue: Boolean);
   begin
-    SetValue(aValue);
+    SetHasValue(fHasValue);
+    fValue := aValue;
+  end;
+
+  
+  procedure NullableBoolean.Clear;
+  begin
+    IsNull := TRUE;
   end;
 
 {$endif}
+
 
 
 

@@ -8,20 +8,18 @@ interface
 
 {$ifNdef Generics}
 
-  uses
-    Deltics.Nullable.Base;
-
-
   type
-    NullableString = object(Nullable)
+    NullableString = object
     private
+      fHasValue: String;
       fValue: String;
+      function get_IsNull: Boolean;
       function get_Value: String;
+      procedure set_IsNull(const aValue: Boolean);
       procedure set_Value(const aValue: String);
-    protected
-      procedure GetValue(var aValue);
-      procedure SetValue(const aValue);
     public
+      procedure Clear;
+      property IsNull: Boolean read get_IsNull write set_IsNull;
       property Value: String read get_Value write set_Value;
     end;
 
@@ -31,36 +29,42 @@ interface
 
 implementation
 
-
 {$ifNdef Generics}
 
-{ NullableString --------------------------------------------------------------------------------- }
+  uses
+    Deltics.Nullable.Utils;
 
-  procedure NullableString.GetValue(var aValue);
+
+{ NullableString -------------------------------------------------------------------------------- }
+
+  function NullableString.get_IsNull: Boolean;
   begin
-    inherited;
-
-    String(aValue) := fValue;
-  end;
-
-
-  procedure NullableString.SetValue(const aValue);
-  begin
-    inherited;
-
-    fValue := String(aValue);
+    GetIsNull(fHasValue, result);
   end;
 
 
   function NullableString.get_Value: String;
   begin
-    GetValue(result);
+    CheckHasValue(fHasValue);
+    result := fValue;
+  end;
+
+
+  procedure NullableString.set_IsNull(const aValue: Boolean);
+  begin
+    SetNullIfTrue(aValue, fHasValue);
   end;
 
 
   procedure NullableString.set_Value(const aValue: String);
   begin
-    SetValue(aValue);
+    SetHasValue(fHasValue);
+    fValue := aValue;
+  end;
+
+  procedure NullableString.Clear;
+  begin
+    IsNull := TRUE;
   end;
 
 {$endif}

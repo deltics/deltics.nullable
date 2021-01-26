@@ -8,57 +8,63 @@ interface
 
 {$ifNdef Generics}
 
-  uses
-    Deltics.Nullable.Base;
-
   type
-    NullableDatetime = object(Nullable)
+    NullableDatetime = object
     private
+      fHasValue: String;
       fValue: TDatetime;
+      function get_IsNull: Boolean;
       function get_Value: TDatetime;
+      procedure set_IsNull(const aValue: Boolean);
       procedure set_Value(const aValue: TDatetime);
-    protected
-      procedure GetValue(var aValue);
-      procedure SetValue(const aValue);
     public
+      procedure Clear;
+      property IsNull: Boolean read get_IsNull write set_IsNull;
       property Value: TDatetime read get_Value write set_Value;
     end;
 
 {$endif}
 
 
-implementation
 
+implementation
 
 {$ifNdef Generics}
 
-{ NullableDatetime ------------------------------------------------------------------------------- }
+  uses
+    Deltics.Nullable.Utils;
 
-  procedure NullableDatetime.GetValue(var aValue);
+
+{ NullableDatetime -------------------------------------------------------------------------------- }
+
+  function NullableDatetime.get_IsNull: Boolean;
   begin
-    inherited;
-
-    TDatetime(aValue) := fValue;
-  end;
-
-
-  procedure NullableDatetime.SetValue(const aValue);
-  begin
-    inherited;
-
-    fValue := TDatetime(aValue);
+    GetIsNull(fHasValue, result);
   end;
 
 
   function NullableDatetime.get_Value: TDatetime;
   begin
-    GetValue(result);
+    CheckHasValue(fHasValue);
+    result := fValue;
+  end;
+
+
+  procedure NullableDatetime.set_IsNull(const aValue: Boolean);
+  begin
+    SetNullIfTrue(aValue, fHasValue);
   end;
 
 
   procedure NullableDatetime.set_Value(const aValue: TDatetime);
   begin
-    SetValue(aValue);
+    SetHasValue(fHasValue);
+    fValue := aValue;
+  end;
+
+  procedure NullableDatetime.Clear;
+  begin
+    IsNull := TRUE;
   end;
 
 {$endif}
