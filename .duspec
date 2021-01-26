@@ -23,11 +23,12 @@
       "files":[
         "src\\deltics.nullable.inc",
         "src\\Deltics.Nullable.pas",
-        "src\\Deltics.Nullable.Base.pas",
         "src\\Deltics.Nullable.Boolean.pas",
         "src\\Deltics.Nullable.Datetime.pas",
         "src\\Deltics.Nullable.Integer.pas",
-        "src\\Deltics.Nullable.String_.pas"
+        "src\\Deltics.Nullable.String_.pas",
+        "src\\Deltics.Nullable.Generic.pas",
+        "src\\Deltics.Nullable.Utils.pas"
       ]
     }
 }
