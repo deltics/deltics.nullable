@@ -36,7 +36,7 @@ implementation
     sut.Value := EncodeDate(2020,06,15);
 
     Test('IsNull').Assert(sut.IsNull).IsFalse;
-    Test('Value').Assert(sut.Value).Equals(EncodeDate(2020,06,15));
+    Test('Value').AssertDatetime(sut.Value).Equals(EncodeDate(2020,06,15));
 
     sut.Clear;
 
@@ -69,7 +69,7 @@ implementation
     sut.Value := EncodeDate(2020,06,15);
 
     Test('IsNull').Assert(sut.IsNull).IsFalse;
-    Test('Value').Assert(sut.Value).Equals(EncodeDate(2020,06,15));
+    Test('Value').AssertDatetime(sut.Value).Equals(EncodeDate(2020,06,15));
   end;
 
 
